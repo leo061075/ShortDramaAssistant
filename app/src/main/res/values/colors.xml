@@ -1,0 +1,26 @@
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="brand">#4D7CFF</color>
+    <color name="brand_dark">#203B96</color>
+    <color name="brand_deep">#0E1B54</color>
+    <color name="brand_purple">#7A5CFF</color>
+    <color name="brand_cyan">#62D7FF</color>
+    <color name="surface_dark">#08122E</color>
+    <color name="surface_dark_2">#0F1F4D</color>
+    <color name="surface_light">#F5F8FF</color>
+    <color name="surface_soft">#EAF0FF</color>
+    <color name="text_primary">#F8FBFF</color>
+    <color name="text_dark">#1A285B</color>
+    <color name="text_muted">#8EA1D9</color>
+    <color name="success">#21C58B</color>
+    <color name="danger">#FF5A64</color>
+    <color name="warning">#FDB44B</color>
+    <color name="proto_bg">#F7F9FD</color>
+    <color name="proto_text">#18233D</color>
+    <color name="proto_muted">#7E8BA7</color>
+    <color name="proto_blue">#3E73F7</color>
+    <color name="proto_purple">#704CF4</color>
+    <color name="proto_green">#19B98A</color>
+</resources>

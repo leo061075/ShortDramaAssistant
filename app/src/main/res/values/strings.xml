@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">短剧助手</string>
+    <string name="accessibility_desc">识别短剧页、广告页和“上滑继续观看短剧”提示，并在广告结束后自动上滑进入下一集。</string>
+</resources>
