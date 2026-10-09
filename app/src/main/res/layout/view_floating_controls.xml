@@ -8,7 +8,7 @@
     android:orientation="horizontal"
     android:paddingLeft="9dp"
     android:paddingTop="4dp"
-    android:paddingRight="12dp"
+    android:paddingRight="8dp"
     android:paddingBottom="4dp">
 
     <TextView
@@ -37,12 +37,4 @@
         android:padding="14dp"
         android:src="@drawable/ic_control_stop" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:gravity="center_vertical"
-        android:text="停止"
-        android:textColor="@android:color/white"
-        android:textSize="12sp" />
 </LinearLayout>
