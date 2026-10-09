@@ -6,9 +6,15 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.graphics.Color
 import android.provider.Settings
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.view.updatePadding
 import com.example.shortdramarecorder.access.DramaAccessibilityService
 import com.example.shortdramarecorder.databinding.ActivityMainBinding
 import com.example.shortdramarecorder.overlay.FloatingControlService
@@ -33,6 +39,7 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        configureSystemBarInsets()
 
         setupActions()
         updateStatus()
@@ -57,6 +64,49 @@ class MainActivity : AppCompatActivity() {
     override fun onPause() {
         DramaAccessibilityService.setOwnAppVisible(false)
         super.onPause()
+    }
+
+    /**
+     * Android 15 (targetSdk 35) draws app content behind system bars.
+     * Keep the gradient header behind the status bar, but move the header
+     * controls below it. Reserve the navigation-bar area for scroll content.
+     * Padding is calculated from the original values so it cannot accumulate
+     * after rotation or repeat inset dispatches.
+     */
+    private fun configureSystemBarInsets() {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        window.statusBarColor = Color.TRANSPARENT
+        window.navigationBarColor = getColor(R.color.proto_bg)
+
+        WindowInsetsControllerCompat(window, window.decorView).apply {
+            isAppearanceLightStatusBars = false
+            isAppearanceLightNavigationBars = true
+        }
+
+        val header = binding.skipHeader
+        val originalHeaderTop = header.paddingTop
+        val originalRootLeft = binding.root.paddingLeft
+        val originalRootRight = binding.root.paddingRight
+        val originalRootBottom = binding.root.paddingBottom
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
+            val topInsets = insets.getInsets(
+                WindowInsetsCompat.Type.statusBars() or
+                    WindowInsetsCompat.Type.displayCutout()
+            )
+            val bottomInsets = insets.getInsets(
+                WindowInsetsCompat.Type.navigationBars() or
+                    WindowInsetsCompat.Type.displayCutout()
+            )
+            header.updatePadding(top = originalHeaderTop + topInsets.top)
+            view.updatePadding(
+                left = originalRootLeft + maxOf(topInsets.left, bottomInsets.left),
+                right = originalRootRight + maxOf(topInsets.right, bottomInsets.right),
+                bottom = originalRootBottom + bottomInsets.bottom
+            )
+            insets
+        }
+        ViewCompat.requestApplyInsets(binding.root)
     }
 
     private fun setupActions() {
