@@ -46,7 +46,7 @@
                 <EditText android:id="@+id/etEpisodePattern"
                     android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:layout_marginTop="9dp" android:background="@drawable/bg_settings_field"
-                    android:inputType="textNoSuggestions" android:gravity="top|start"
+                    android:inputType="text|textNoSuggestions" android:gravity="top|start"
                     android:minLines="1" android:maxLines="1"
                     android:padding="11dp" android:textColor="@color/proto_text"
                     android:textColorHint="@color/proto_muted" android:textSize="13sp" />
@@ -67,7 +67,7 @@
                 <EditText android:id="@+id/etTotalPattern"
                     android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:layout_marginTop="9dp" android:background="@drawable/bg_settings_field"
-                    android:inputType="textNoSuggestions" android:gravity="top|start"
+                    android:inputType="text|textNoSuggestions" android:gravity="top|start"
                     android:minLines="1" android:maxLines="1"
                     android:padding="11dp" android:textColor="@color/proto_text"
                     android:textColorHint="@color/proto_muted" android:textSize="13sp" />
@@ -88,7 +88,7 @@
                 <EditText android:id="@+id/etDramaLabels"
                     android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:layout_marginTop="9dp" android:background="@drawable/bg_settings_field"
-                    android:inputType="textMultiLine|textNoSuggestions" android:gravity="top|start"
+                    android:inputType="text|textMultiLine|textNoSuggestions" android:gravity="top|start"
                     android:minLines="2" android:maxLines="7"
                     android:padding="11dp" android:textColor="@color/proto_text"
                     android:textColorHint="@color/proto_muted" android:textSize="13sp" />
@@ -109,7 +109,7 @@
                 <EditText android:id="@+id/etPrimaryAd"
                     android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:layout_marginTop="9dp" android:background="@drawable/bg_settings_field"
-                    android:inputType="textMultiLine|textNoSuggestions" android:gravity="top|start"
+                    android:inputType="text|textMultiLine|textNoSuggestions" android:gravity="top|start"
                     android:minLines="2" android:maxLines="7"
                     android:padding="11dp" android:textColor="@color/proto_text"
                     android:textColorHint="@color/proto_muted" android:textSize="13sp" />
@@ -130,7 +130,7 @@
                 <EditText android:id="@+id/etAuxiliaryAd"
                     android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:layout_marginTop="9dp" android:background="@drawable/bg_settings_field"
-                    android:inputType="textMultiLine|textNoSuggestions" android:gravity="top|start"
+                    android:inputType="text|textMultiLine|textNoSuggestions" android:gravity="top|start"
                     android:minLines="2" android:maxLines="7"
                     android:padding="11dp" android:textColor="@color/proto_text"
                     android:textColorHint="@color/proto_muted" android:textSize="13sp" />
@@ -151,7 +151,7 @@
                 <EditText android:id="@+id/etContinuePrompt"
                     android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:layout_marginTop="9dp" android:background="@drawable/bg_settings_field"
-                    android:inputType="textMultiLine|textNoSuggestions" android:gravity="top|start"
+                    android:inputType="text|textMultiLine|textNoSuggestions" android:gravity="top|start"
                     android:minLines="2" android:maxLines="7"
                     android:padding="11dp" android:textColor="@color/proto_text"
                     android:textColorHint="@color/proto_muted" android:textSize="13sp" />
