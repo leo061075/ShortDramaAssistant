@@ -10,13 +10,13 @@ import android.os.SystemClock
 import com.example.shortdramarecorder.access.DramaAccessibilityService
 import com.example.shortdramarecorder.state.AdStateCoordinator
 import com.example.shortdramarecorder.state.ContinuePromptDetector
+import com.example.shortdramarecorder.state.RecognitionRules
 import com.example.shortdramarecorder.state.SwipeDiagnostics
 import com.example.shortdramarecorder.state.PlaybackSkipSession
 import com.example.shortdramarecorder.state.SkipRuntimeState
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.chinese.ChineseTextRecognizerOptions
-import java.util.regex.Pattern
 
 class OcrMonitorEngine(
     private val context: Context
@@ -41,28 +41,6 @@ class OcrMonitorEngine(
     private var analyzing = false
 
     private var lastOcrAt = 0L
-    private val episodePattern =
-        Pattern.compile(
-            "第\\s*(\\d{1,4})\\s*集"
-        )
-
-    private val totalPattern =
-        Pattern.compile(
-            "(\\d{1,4})\\s*集全"
-        )
-
-    private val unlockAdPattern =
-        Pattern.compile(
-            """(?:\d{1,3}|[一二三四五六七八九十百]+)\s*秒后可解锁付费集"""
-        )
-
-    private val assistAdKeywords =
-        listOf(
-            "退出短剧",
-            "免费广告",
-            "点击进入直播间"
-        )
-
     private val scanRunnable =
         object : Runnable {
             override fun run() {
@@ -453,33 +431,9 @@ class OcrMonitorEngine(
             return
         }
 
-        val episodeMatcher =
-            episodePattern.matcher(text)
-
-        val episode =
-            if (
-                episodeMatcher.find()
-            ) {
-                episodeMatcher
-                    .group(1)
-                    ?.toIntOrNull()
-            } else {
-                null
-            }
-
-        val totalMatcher =
-            totalPattern.matcher(text)
-
-        val totalEpisodes =
-            if (
-                totalMatcher.find()
-            ) {
-                totalMatcher
-                    .group(1)
-                    ?.toIntOrNull()
-            } else {
-                null
-            }
+        val rules = RecognitionRules.current()
+        val episode = rules.episodeNumber(text)
+        val totalEpisodes = rules.totalNumber(text)
 
         val episodeVisible =
             episode != null
@@ -488,7 +442,7 @@ class OcrMonitorEngine(
             totalEpisodes != null
 
         val shortDramaVisible =
-            text.contains("短剧")
+            rules.containsDramaLabel(text)
 
         val definiteDramaPage =
             episodeVisible &&
@@ -510,14 +464,8 @@ class OcrMonitorEngine(
         val hasContinuePrompt =
             hasContinuePrompt(text)
 
-        val unlockAdDetected =
-            unlockAdPattern.matcher(text).find() ||
-                text.contains("秒后可解锁付费集")
-
-        val assistAdDetected =
-            assistAdKeywords.count {
-                text.contains(it)
-            } >= 2
+        val unlockAdDetected = rules.containsPrimaryAd(text)
+        val assistAdDetected = rules.containsAuxiliaryAd(text)
 
         if (definiteDramaPage &&
             !(PlaybackSkipSession.isActive && hasContinuePrompt)
@@ -572,49 +520,19 @@ class OcrMonitorEngine(
     private fun hasContinuePrompt(text: String): Boolean =
         ContinuePromptDetector.matches(text)
 
-    private fun updateTitle(
-        text: String
-    ) {
-        val line =
-            text.lineSequence()
-                .map { it.trim() }
-                .firstOrNull {
-                    it.contains("短剧") &&
-                        totalPattern
-                            .matcher(it)
-                            .find()
-                }
-                ?: return
-
-        val cleaned =
-            line.replace(
-                "短剧",
-                ""
-            )
-                .replace(
-                    "·",
-                    " "
-                )
-                .replace(
-                    "…",
-                    " "
-                )
-                .replace(
-                    Regex(
-                        "\\d+\\s*集全"
-                    ),
-                    ""
-                )
-                .replace(
-                    Regex("\\s+"),
-                    " "
-                )
-                .trim()
-
-        if (cleaned.isNotBlank()) {
-            SkipRuntimeState.title =
-                cleaned.take(30)
-        }
+    private fun updateTitle(text: String) {
+        val rules = RecognitionRules.current()
+        val line = text.lineSequence().map { it.trim() }
+            .firstOrNull {
+                rules.containsDramaLabel(it) && rules.totalNumber(it) != null
+            } ?: return
+        val label = rules.dramaLabels.firstOrNull { line.contains(it) } ?: return
+        val noLabel = line.replace(label, "")
+        val cleaned = rules.totalPattern.matcher(noLabel).replaceAll("")
+            .replace("·", " ")
+            .replace("…", " ")
+            .replace(Regex("""\s+"""), " ").trim()
+        if (cleaned.isNotBlank()) SkipRuntimeState.title = cleaned.take(30)
     }
 
     fun stop() {

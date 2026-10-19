@@ -10,6 +10,8 @@
         android:label="短剧助手"
         android:theme="@style/Theme.ShortDramaAssistant">
 
+        <activity android:name=".SettingsActivity" android:exported="false" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true">

@@ -1,6 +1,5 @@
 package com.example.shortdramarecorder
 
-import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -19,6 +18,7 @@ import com.example.shortdramarecorder.access.DramaAccessibilityService
 import com.example.shortdramarecorder.databinding.ActivityMainBinding
 import com.example.shortdramarecorder.overlay.FloatingControlService
 import com.example.shortdramarecorder.state.PlaybackSkipSession
+import com.example.shortdramarecorder.state.RecognitionRules
 import com.example.shortdramarecorder.state.SkipRuntimeState
 import com.example.shortdramarecorder.state.SwipeDiagnostics
 
@@ -37,6 +37,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        RecognitionRules.initialize(applicationContext)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         configureSystemBarInsets()
@@ -115,7 +116,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.btnSkipSettings.setOnClickListener {
-            showAboutDialog()
+            startActivity(Intent(this, SettingsActivity::class.java))
         }
 
         binding.btnSkipOverlay.setOnClickListener {
@@ -260,27 +261,5 @@ class MainActivity : AppCompatActivity() {
                 else R.color.proto_muted
             )
         )
-    }
-
-    private fun showAboutDialog() {
-        AlertDialog.Builder(this)
-            .setTitle("短剧助手 1.0")
-            .setMessage(
-                """
-                当前版本仅提供跳广告功能。
-
-                工作流程：
-                1. 识别广告页面
-                2. 等待广告播放结束
-                3. 识别“上滑继续观看短剧”
-                4. 自动上滑进入下一集
-
-                必需权限：
-                • 悬浮窗
-                • 无障碍 / 自动识别
-                """.trimIndent()
-            )
-            .setPositiveButton("知道了", null)
-            .show()
     }
 }
